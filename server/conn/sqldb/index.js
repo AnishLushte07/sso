@@ -3,6 +3,7 @@ const Sequelize = require('sequelize');
 
 const config = require('../../config/environment');
 const oauthComponent = require('../../components/oauth/sequelize');
+
 const { log } = console;
 
 const sqlDefaults = {
@@ -25,6 +26,9 @@ const db = {
 [
   // - Enums
   'User',
+
+  // - Passowrd Reset
+  'PasswordResetLogin',
 
   // - Others
   'Log',

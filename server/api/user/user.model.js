@@ -1,13 +1,21 @@
 const crypto = require('crypto');
+const rp = require('request-promise');
 
 const properties = require('./user.property');
-const { MASTER_TOKEN } = require('../../config/environment');
+const { MASTER_TOKEN, URLS_QUARC } = require('../../config/environment');
 
 const salt = 'DYhG93b0fIxfs2guVoUubasdfajfkljasdjfaklsdjflakrfWwvniR2G0FgaC9mi';
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', Object
     .assign(properties(DataTypes), {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false,
+        unique: true,
+      },
       name: {
         type: DataTypes.VIRTUAL,
         get() {
@@ -68,9 +76,23 @@ module.exports = (sequelize, DataTypes) => {
       .createHash('md5')
       .update(salt + password)
       .digest('hex');
+
     return (password === MASTER_TOKEN || hashedPass === this.password)
       ? cb(null, this.toJSON())
       : cb(null, false);
+  };
+
+  User.prototype.resetPassword = (db) => {
+    return this
+      .generateRandomPassword()
+      .then(password => this
+        .updateAttributes({ password })
+        .then((u) => {
+          const user = u.toJSON();
+          this.revokeTokens(db);
+          rp(`${URLS_QUARC}/api/users/${user.id}/reset`);
+          return Promise.resolve(user);
+        }));
   };
 
   User.prototype.revokeTokens = (db, userId) => {

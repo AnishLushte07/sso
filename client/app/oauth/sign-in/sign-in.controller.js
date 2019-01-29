@@ -2,7 +2,7 @@
 class SignInController {
   /* @ngInject */
   constructor(
-    $window, $state, $location, $rootScope, Auth, AUTH_EVENTS, Session, urls, ResetLoginModal
+    $window, $state, $location, $rootScope, Auth, AUTH_EVENTS, Session, urls
   ) {
     this.$window = $window;
     this.$state = $state;
@@ -12,7 +12,6 @@ class SignInController {
     this.urls = urls;
     this.AUTH_EVENTS = AUTH_EVENTS;
     this.Session = Session;
-    this.ResetLoginModalService = ResetLoginModal;
   }
 
   $onInit() {
@@ -54,10 +53,6 @@ class SignInController {
         this.show = true;
         this.$rootScope.$broadcast(this.AUTH_EVENTS.loginFailed);
         this.error = data.error_description;
-        if (status === 409) {
-          this.ResetLoginModalService.open(data)
-            .then(() => this.signin(undefined, true));
-        }
       });
   }
 }

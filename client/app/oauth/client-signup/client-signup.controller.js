@@ -63,7 +63,7 @@ class ClientSignupController {
       ? { name: `${firstname} ${lastname}` }
       : {
         fullname: `${firstname} ${lastname}`,
-        email_id: email,
+        email,
         contact_no: mobno,
         company_name: companyname,
       };

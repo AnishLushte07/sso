@@ -1,15 +1,17 @@
 const debug = require('debug');
+const moment = require('moment');
 const jsonwebtoken = require('jsonwebtoken');
+const rp = require('request-promise');
 
 const { MASTER_TOKEN } = require('../../config/environment');
 const authoriser = require('../../components/oauth/authorise');
 const jwt = require('../../components/jwt');
-
-const { User, AccessToken } = require('../../conn/sqldb');
+const db = require('../../conn/sqldb');
 const hookshot = require('./user.hookshot');
 const service = require('./user.service');
 
 const log = debug('server-api-applicant');
+const { User, AccessToken } = db;
 
 exports.index = async (req, res, next) => {
   try {
@@ -202,4 +204,42 @@ exports.update = async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
+};
+
+exports.password = (req, res, next) => {
+  return db.User
+    .findById(req.user.id, {
+      attributes: ['id', 'first_name', 'email', 'password', 'password_valid_till'],
+    })
+    .then((user) => {
+      if (!moment().isBefore(user.get('password_valid_till'))) {
+        const validTill = moment().add(2, 'years');
+
+        return user
+          .updateAttributes({ password: req.body.password, password_valid_till: validTill })
+          .then(() => res.status(204).end())
+          .then(() => service.changePasswordNotify({
+            password: req.body.password,
+            user,
+          }));
+      }
+
+      return user.verifyPassword(req.body.old_password, (err, userModel) => {
+        if (err || !userModel) {
+          return res.status(400)
+            .json({ error: 'Invalid password', error_description: 'Invalid current password' });
+        }
+
+        return user.updateAttributes({ password: req.body.password })
+          .then(() => {
+            res.status(204).end();
+            user.revokeTokens(db); // revoke all
+            return service.changePasswordNotify({
+              password: req.body.password,
+              user: userModel,
+            });
+          });
+      });
+    })
+    .catch(next);
 };

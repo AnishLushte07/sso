@@ -11,28 +11,6 @@ exports.login = (req, res) => {
   return res.end();
 };
 
-function storeTheGoogleToken(gToken, email) {
-  db.User.findOne({
-    where: {
-      email_id: email,
-    },
-    raw: true,
-    attributes: ['id'],
-  }).then((user) => {
-    if (user) {
-      db.UserGoogleToken.upsert({
-        user_id: user.id,
-        access_token: gToken.access_token,
-        token_type: gToken.token_type,
-        refresh_token: gToken.refresh_token,
-        user_google_tokens: gToken.id_token,
-      }, { user_id: user.id });
-    }
-  }).catch((err) => {
-    logger.error('err == ', err);
-  });
-}
-
 exports.oauth = (req, res, next) => {
   if (req.body.grant_type !== 'google') return next();
   return rp({
@@ -65,7 +43,6 @@ exports.oauth = (req, res, next) => {
       req.body.grant_type = 'password';
       req.body = { username: email, password: env.CRON_TOKEN };
       logger.log('AFTER GOOGLE LOGIN', req.body);
-      storeTheGoogleToken(gToken, email);
       return next();
     })
     .catch((err) => {

@@ -18,6 +18,7 @@ const config = {
     ip: process.env.IP || '0.0.0.0',
     root,
     URLS_SSO: `${PREFIX}sso.${DOMAIN}`,
+    URLS_QUARC: `${PREFIX}api.${DOMAIN}`,
     // Browser-sync port
     browserSyncPort: process.env.BROWSER_SYNC_PORT || 2001,
     auth: {

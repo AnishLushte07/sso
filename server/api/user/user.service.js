@@ -105,7 +105,7 @@ exports.signup = async ({ body }) => {
 
 exports.changePasswordNotify = (body) => rp({
   method: 'POST',
-  uri: `${URLS_QUARC}/api/queuedTasks/changePasswordNotify?token=${MASTER_TOKEN}`,
+  uri: `${URLS_QUARC}/api/queuedTasks?token=${MASTER_TOKEN}`,
   body,
   json: true,
   headers: { 'User-Agent': 'Request-Promise' },

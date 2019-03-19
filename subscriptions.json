@@ -1,4 +1,5 @@
 {
   "user:magiclink": ["http://localhost:2002/api/users/magiclink"],
-  "user:loginPassword": ["http://localhost:2002/api/users/loginPassword"]
+  "user:loginPassword": ["http://localhost:2002/api/users/loginPassword"],
+  "passwordResetLogin:create": ["http://localhost:2002/api/passwordResetLogins"]
 }

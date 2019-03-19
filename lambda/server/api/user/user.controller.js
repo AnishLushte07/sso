@@ -5,7 +5,7 @@ exports.magiclink = async (req, res, next) => {
   try {
     const { user: { email }, otp, ENV } = req.body;
 
-    const magicLink = `${ENV.URLS_ACCOUNTS}/api/users/authorise?otp=${otp}`;
+    const magicLink = `${ENV.URLS_SSO}/api/users/authorise?otp=${otp}`;
 
     await ses.sendTemplatedEmailAsync({
       Source: `"QuezX.com" <${SMTP_USER}>`,

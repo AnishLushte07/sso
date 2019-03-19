@@ -13,12 +13,14 @@ const errors = require('./components/errors');
 const { authenticate: jwtAuthenticate, sign } = require('./components/jwt');
 const authenticate = require('./components/oauth/authenticate');
 const user = require('./api/user');
+const passwordResetLogin = require('./api/passwordResetLogin');
 
 // - Routers
 module.exports = (app) => {
   app.use(express.static(app.get('appPath')));
 
   app.use('/api/users', user, authenticate);
+  app.use('/api/password_reset', passwordResetLogin);
 
   app.get('/', (req, res) => res.json({ version, name }));
   app.get('/signedUrl', (req, res) => res.json(`http://aapi.quezx.test/l?access_token=${sign({ email: 'manjeshpv@gmail.com' })}`));

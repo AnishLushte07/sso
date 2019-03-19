@@ -10,7 +10,7 @@ class PasswordResetController {
   }
 
   $onInit() {
-    this.data = { email_id: '' };
+    this.data = { email: '' };
     this.error = null;
     this.success = null;
     this.sentTo = null;
@@ -27,7 +27,7 @@ class PasswordResetController {
         .then(({ data }) => {
           this.$stateParams.token = this.$stateParams.id = null;
           this.resetPwd = true;
-          this.data.email_id = data.email_id;
+          this.data.email = data.email;
         })
         .catch(({ data }) => (this.error = data.error_description || this.ERROR_MSG));
     }
@@ -40,7 +40,7 @@ class PasswordResetController {
   sendResetMail() {
     this.sentTo = this.error = '';
     this.$http.post('/password_reset', this.data, { ignoreAuthModule: true })
-      .then(() => { this.sentTo = this.data.email_id; })
+      .then(() => { this.sentTo = this.data.email; })
       .catch(({ data }) => (this.error = data.error_description || this.ERROR_MSG));
   }
 
@@ -52,7 +52,7 @@ class PasswordResetController {
       .then(() => {
         this.success = 'Password update was successful.';
         this.$timeout(() => (this.$state.go('oauth.sign-in', {
-          username: this.data.email_id,
+          username: this.data.email,
           password: this.data.password,
         })), 10);
       })

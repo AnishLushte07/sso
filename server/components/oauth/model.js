@@ -216,7 +216,7 @@ const oAuthModel = {
 
   getUser(username, password, callback) {
     log('getUser', username, password);
-    const where = { email: username };
+    const where = { $or: { username, email: username } };
     return User
       .find({
         where,

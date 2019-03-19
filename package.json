@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/quezx/accounts#readme",
   "dependencies": {
+    "addressparser": "^1.0.1",
+    "aws-sdk": "^2.394.0",
     "body-parser": "^1.13.3",
     "bowser": "^1.8.1",
     "composable-middleware": "^0.3.0",
@@ -39,6 +41,8 @@
     "mysql2": "^1.5.3",
     "ngeohash": "^0.6.0",
     "node-webhooks": "^1.4.0",
+    "nodemailer": "^5.1.1",
+    "nodemailer-html-to-text": "^3.0.0",
     "oauth2-server": "github:quezx/node-oauth2-server",
     "request-promise": "^4.2.2",
     "response-time": "^2.3.2",

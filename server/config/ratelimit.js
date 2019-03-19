@@ -38,9 +38,9 @@ function checkNotify(db, req, type = 'api') {
         where: {
           access_token: token.replace(/Bearer/g, '').trim(),
         },
-        include: [{ model: db.User, attributes: ['id', 'email_id'] }],
+        include: [{ model: db.User, attributes: ['id', 'email'] }],
       }).then((t) => {
-        Notify.slack(`${message} User: ${t.User ? t.User.get('email_id') : ''}`);
+        Notify.slack(`${message} User: ${t.User ? t.User.get('email') : ''}`);
       });
     } else {
       Notify.slack(`${message} user details not found.`);

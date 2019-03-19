@@ -16,8 +16,8 @@ script(type='text/ng-template' id='navbar-profile-template.html')
           title='{{::$ctrl.user.name}}'
           ng-click='$ctrl.isProfPopOpen =!$ctrl.isProfPopOpen;')
         .w-full.text-ellipsis.m-t-xs.text-dark(
-          ng-bind='::$ctrl.user.email_id'
-          title='{{::$ctrl.user.email_id}}'
+          ng-bind='::$ctrl.user.email'
+          title='{{::$ctrl.user.email}}'
           ng-click='$ctrl.isProfPopOpen =!$ctrl.isProfPopOpen;')
         .w-full.m-t-xs: a.text-xs(
           ui-sref='settings.password-change'

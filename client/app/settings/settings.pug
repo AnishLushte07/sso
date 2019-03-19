@@ -22,7 +22,7 @@
               a.m-l-sm(ui-sref='settings.configuration.duplicate-check({status: false})')
                 span Duplicate Check
         li(ui-sref-active='active' ng-click='$ctrl.openCollapse()')
-          a(ui-sref='settings.support')
+          a(ng-href='{{$ctrl.urls.ACCOUNTS_APP}}/settings/support')
             span Support
 .bg-white-only.pos-abt(style='width: 100%;')
   div(ui-view="")

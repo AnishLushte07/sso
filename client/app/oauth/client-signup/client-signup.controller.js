@@ -63,14 +63,14 @@ class ClientSignupController {
       ? { name: `${firstname} ${lastname}` }
       : {
         fullname: `${firstname} ${lastname}`,
-        email_id: email,
+        email,
         contact_no: mobno,
         company_name: companyname,
       };
     Object.assign(obj, this.url);
     Object.assign(this.data, obj);
     this.$http
-    .post(`${this.urls.API_SERVER}/api/signUps`, this.data, {
+    .post(`${this.urls.SSO_APP}/api/signUps`, this.data, {
       ignoreAuthModule: true,
     })
     .then(() => {

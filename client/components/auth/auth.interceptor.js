@@ -5,13 +5,12 @@ function AuthInterceptor($window, Session, urls) {
       const conf = config;
 
       // handle url request without domain to api server
-      if (conf.url[0] === '/') conf.url = `${urls.API_SERVER}/api${conf.url}`;
-      if (conf.url[0] === '#') conf.url = `${urls.ACCOUNTS_APP}/api${conf.url.substr(1)}`;
+      if (conf.url[0] === '/') conf.url = `${urls.SSO_APP}/api${conf.url}`;
 
       if (!!conf.ignoreAuthModule) return conf; // don't need token
 
       // little bit hacky for now => if index is zero only then returns truthy
-      if (!conf.url.indexOf(urls.API_SERVER) && !Session.isLoggedIn) {
+      if (!conf.url.indexOf(urls.SSO_APP) && !Session.isLoggedIn) {
         const location = $window.location;
         const { pathname, search } = location;
 
@@ -20,13 +19,8 @@ function AuthInterceptor($window, Session, urls) {
         return null;
       }
 
-      const IS_AUTH = conf.url.startsWith(urls.ACCOUNTS_APP);
-
       // Attach accessToken to api requests
-      conf.headers.Authorization = `Bearer ${IS_AUTH
-        ? Session.read('auth-oauth').access_token
-        : Session.accessToken}`;
-
+      conf.headers.Authorization = `Bearer ${Session.accessToken}`;
       return conf;
     },
   };

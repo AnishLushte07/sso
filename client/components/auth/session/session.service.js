@@ -7,9 +7,7 @@ class SessionService {
   }
 
   get isLoggedIn() {
-    const quarc = !!(this.read('oauth') && this.read('oauth').access_token);
-    const accounts = !!(this.read('auth-oauth') && this.read('auth-oauth').access_token);
-    return quarc || accounts;
+    return !!(this.read('oauth') && this.read('oauth').access_token);
   }
 
   get accessToken() {

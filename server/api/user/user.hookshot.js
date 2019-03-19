@@ -1,4 +1,4 @@
-const { URLS_ACCOUNTS } = require('../../config/environment');
+const { URLS_SSO } = require('../../config/environment');
 const hookshot = require('../../conn/hookshot');
 
 exports.magiclink = ({ email, otp }) => {
@@ -9,7 +9,7 @@ exports.magiclink = ({ email, otp }) => {
       email,
     },
     otp,
-    ENV: { URLS_ACCOUNTS },
+    ENV: { URLS_SSO },
   });
 };
 

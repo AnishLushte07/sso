@@ -7,10 +7,12 @@ const logger = require('./components/logger');
 
 // - Routers
 const user = require('./api/user');
+const passwordResetLogin = require('./api/passwordResetLogin');
 
 module.exports = (app) => {
   app.get('/api/health', (req, res) => res.json({ name, version }));
   app.use('/api/users', user);
+  app.use('/api/passwordResetLogins', passwordResetLogin);
 
   app.use(logger.transports.sentry.raven.errorHandler());
 

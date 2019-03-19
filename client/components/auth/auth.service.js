@@ -8,8 +8,6 @@ class AuthService {
     this.urls = urls;
     this.authService = authService;
     this.Session = Session;
-    this.apiUrl = `${urls.API_SERVER}/api`;
-    this.authUrl = `${urls.API_SERVER}/applications/accounts/api`;
   }
 
   login(credential) {
@@ -17,8 +15,8 @@ class AuthService {
 
     return this
       .$http
-      .post(`${this.urls.API_SERVER}/oauth/token`, loginCredentials, {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      .post(`${this.urls.SSO_APP}/oauth/token`, loginCredentials, {
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         transformRequest(obj) {
           return Object
             .keys(obj)
@@ -28,33 +26,6 @@ class AuthService {
         ignoreAuthModule: true,
       })
       .then(res => this.Session.create('oauth', res.data))
-      .catch(res => {
-        const IS_SSO = this.Session.read('auth-oauth');
-        if (IS_SSO && res.status !== 409) {
-          return Promise.resolve(!!IS_SSO);
-        }
-
-        this.Session.destroy();
-        return this.$q.reject(res);
-      });
-  }
-
-  authLogin(credential) {
-    const loginCredentials = credential;
-
-    return this
-      .$http
-      .post(`${this.urls.ACCOUNTS_APP}/oauth/token`, loginCredentials, {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        transformRequest(obj) {
-          return Object
-            .keys(obj)
-            .map(p => `${encodeURIComponent(p)}=${encodeURIComponent(obj[p])}`)
-            .join('&');
-        },
-        ignoreAuthModule: true,
-      })
-      .then(res => this.Session.create('auth-oauth', res.data))
       .catch(res => {
         this.Session.destroy();
         return this.$q.reject(res);
@@ -72,8 +43,8 @@ class AuthService {
     return this
       .$http
       .post(
-        `${this.authUrl}/refresh`,
-        { refresh_token: this.Session.read('oauth').refresh_token },
+        `${this.urls.SSO_APP}/oauth/token`,
+        { grant_type: 'refresh_token', refresh_token: this.Session.read('oauth').refresh_token },
         { ignoreAuthModule: true }
       )
       .then(res => {
@@ -98,7 +69,7 @@ class AuthService {
   logout() {
     return this
       .$http
-      .post(`${this.authUrl}/logout`, { access_token: this.Session.accessToken })
+      .post(`${this.urls.SSO_APP}/oauth/revoke`, { access_token: this.Session.accessToken })
       .then(res => {
         // Destroy Session data
         this.Session.destroy();
@@ -113,15 +84,8 @@ class AuthService {
   setSessionData() {
     return this
       .$http
-      .get(`${this.apiUrl}/users/me`)
+      .get(`${this.urls.SSO_APP}/api/users/me`)
       .then(res => this.Session.create('userinfo', res.data));
-  }
-
-  setAuthSessionData() {
-    return this
-      .$http
-      .get(`${this.urls.ACCOUNTS_APP}/api/users/me`)
-      .then(res => this.Session.create('auth-userinfo', res.data));
   }
 }
 
